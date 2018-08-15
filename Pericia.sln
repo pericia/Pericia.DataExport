@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27703.2042
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pericia.DataExport", "Pericia.DataExport\Pericia.DataExport.csproj", "{792E802C-9B5F-4FBA-9D93-B50243EF8DB5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pericia.DataExport.Tests", "Pericia.DataExport.Tests\Pericia.DataExport.Tests.csproj", "{65AE9A90-5A14-4329-BB5B-187AF8FC7ABF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{792E802C-9B5F-4FBA-9D93-B50243EF8DB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{792E802C-9B5F-4FBA-9D93-B50243EF8DB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{792E802C-9B5F-4FBA-9D93-B50243EF8DB5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65AE9A90-5A14-4329-BB5B-187AF8FC7ABF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65AE9A90-5A14-4329-BB5B-187AF8FC7ABF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65AE9A90-5A14-4329-BB5B-187AF8FC7ABF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65AE9A90-5A14-4329-BB5B-187AF8FC7ABF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
