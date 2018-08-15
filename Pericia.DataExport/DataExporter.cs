@@ -6,6 +6,12 @@ namespace Pericia.DataExport
 {
     public class DataExporter
     {
+        private ExportFormat _format;
+        public DataExporter(ExportFormat format)
+        {
+            _format = format;
+        }
+
         public Stream Export<T>(IEnumerable<T> data)
         {
 
