@@ -45,6 +45,15 @@ namespace Pericia.DataExport
             }
             _exporter.NewLine();
 
+            foreach (var line in data)
+            {
+                foreach (var prop in properties)
+                {
+                    _exporter.WriteData(prop.Prop.GetValue(line).ToString());
+                }
+                _exporter.NewLine();
+            }
+
             return _exporter.GetStream();
         }
     }
