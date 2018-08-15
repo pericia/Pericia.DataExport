@@ -33,10 +33,10 @@ namespace Pericia.DataExport.Tests
     public class SampleData
     {
 
-        [ExportColumn("Number", 1)]
+        [ExportColumn(Title = "Number", Order = 1)]
         public int IntData { get; set; }
 
-        [ExportColumn("Text", 2)]
+        [ExportColumn(Title = "Text", Order = 2)]
         public string TextData { get; set; }
 
     }
