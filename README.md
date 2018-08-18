@@ -2,11 +2,25 @@
 
 Pericia.DataExport is a dotnet library to export any `IEnumerable<T>` to an xlsx or csv file.
 
+## Install 
+
+The library `Pericia.DataExport` is available on Nuget : [![NuGet](https://img.shields.io/nuget/v/Pericia.DataExport.svg)](https://www.nuget.org/packages/Pericia.DataExport/)
+
+You can install it with the following command line in your Package Manager Console :
+
+	Install-Package Pericia.DataExport
+
+Or with dotnet core :
+
+	 dotnet add package Pericia.DataExport 
+
+## How to use
+
 The data exported will be a file with column titles on the first line, and all your data on the following lines.
 
 To export your data, you will need to define how it will be exported
 
-## Using Attributes on your model
+### Using Attributes on your model
 
 Add the attribute `ExportColumn` on the properties you want to export. The attributes contains 2 properties : `Title` (the name of the column) ans `Order` (tu sort your columns)
 
@@ -19,7 +33,7 @@ Add the attribute `ExportColumn` on the properties you want to export. The attri
         public string TextData { get; set; }
     }
 
-## Create your exporter
+### Create your exporter
 
 You can use either `CsvDataExporter` or `XlsxDataExporter` :
 
@@ -36,7 +50,7 @@ You can use either `CsvDataExporter` or `XlsxDataExporter` :
 	var xlsxExporter = new XlsxDataExporter();
 	var xlsxResult = exporter.Export(data);
 
-## Create Xlsx file with several sheets
+### Create Xlsx file with several sheets
 
 While the csv exporter will only allow you to export one set of data, with the xlsx exporter you can create several sheets with different data on each.
 
@@ -45,6 +59,6 @@ While the csv exporter will only allow you to export one set of data, with the x
 	xlsxExporter.AddSheet(data2, name="sheet title 2");
 	var xlsxResult = exporter.GetFile();
 
-## Result
+### Result
 
 The exporters will output a `MemoryStream`. You can directly save it to a file, or return it in a `FileResult` in an MVC website.
