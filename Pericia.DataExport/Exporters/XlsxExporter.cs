@@ -16,7 +16,10 @@ namespace Pericia.DataExport.Exporters
         int currentCol = 0;
         int currentRow = 0;
         Row row;
+        WorkbookPart workbookPart;
         SheetData sheetData;
+        Sheets sheets;
+        uint sheetCount = 0;
 
         public XlsxExporter()
         {
@@ -28,25 +31,35 @@ namespace Pericia.DataExport.Exporters
 
         private void InitWorkbook()
         {
-            WorkbookPart workbookPart = package.AddWorkbookPart();
+            workbookPart = package.AddWorkbookPart();
 
             Workbook workbook = new Workbook();
             workbook.AddNamespaceDeclaration("r", "http://schemas.openxmlformats.org/officeDocument/2006/relationships");
             workbookPart.Workbook = workbook;
 
-            Sheets sheets = new Sheets();
+            sheets = new Sheets();
             workbook.Append(sheets);
 
-            Sheet sheet = new Sheet() { Name = "Sheet1", SheetId = (UInt32Value)1U, Id = "rId1" };
+        }
+
+        public void NewSheet()
+        {
+            var sheetId = "rId" + (++sheetCount);
+
+            Sheet sheet = new Sheet() { Name = "Sheet"+sheetCount, SheetId = sheetCount, Id = sheetId };
             sheets.Append(sheet);
 
-            WorksheetPart worksheetPart = workbookPart.AddNewPart<WorksheetPart>("rId1");
+            WorksheetPart worksheetPart = workbookPart.AddNewPart<WorksheetPart>(sheetId);
             Worksheet worksheet = new Worksheet();
             sheetData = new SheetData();
             worksheet.Append(sheetData);
             worksheetPart.Worksheet = worksheet;
 
+            currentCol = 0;
+            currentRow = 0;
+
             NewLine();
+
         }
 
         public void NewLine()

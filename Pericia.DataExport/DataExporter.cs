@@ -25,7 +25,13 @@ namespace Pericia.DataExport
             }
         }
 
-        public Stream Export<T>(IEnumerable<T> data)
+
+        public Stream GetFile()
+        {
+            return _exporter.GetStream();
+        }
+
+        public void AddSheet<T>(IEnumerable<T> data)
         {
             var typeInfo = typeof(T).GetTypeInfo();
 
@@ -39,8 +45,9 @@ namespace Pericia.DataExport
                 }
             }
 
-            properties = properties.OrderBy(a => a.Attr.Order).ToList();
+            _exporter.NewSheet();
 
+            properties = properties.OrderBy(a => a.Attr.Order).ToList();
             // Write headers
             foreach (var prop in properties)
             {
@@ -56,8 +63,13 @@ namespace Pericia.DataExport
                 }
                 _exporter.NewLine();
             }
+        }
 
-            return _exporter.GetStream();
+        public Stream Export<T>(IEnumerable<T> data)
+        {
+            AddSheet(data);
+
+            return GetFile();
         }
     }
 }

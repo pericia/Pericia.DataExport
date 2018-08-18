@@ -67,5 +67,14 @@ namespace Pericia.DataExport.Exporters
             return s;
         }
 
+        bool csvStarted = false;
+        public void NewSheet()
+        {
+            if (csvStarted)
+            {
+                throw new NotSupportedException("You can't add several sheets to a csv file");
+            }
+            csvStarted = true;
+        }
     }
 }

@@ -9,6 +9,7 @@ namespace Pericia.DataExport.Exporters
     {
         void WriteData(string data);
         void NewLine();
+        void NewSheet();
 
         Stream GetStream();
     }
