@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard1.3;netstandard2.0</TargetFrameworks>
     <Authors>Guillaume Lacasa</Authors>
     <Company>Pericia</Company>
     <Description>Easily export your data to a csv or xlsx file</Description>

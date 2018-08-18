@@ -35,13 +35,13 @@ namespace Pericia.DataExport
         {
             var typeInfo = typeof(T).GetTypeInfo();
 
-            var properties = new List<(PropertyInfo Prop, ExportColumnAttribute Attr)>();
-            foreach (var prop in typeInfo.GetProperties())
+            var properties = new List<ColumnInfo>();
+            foreach (var prop in typeInfo.DeclaredProperties)
             {
                 var attribute = prop.GetCustomAttribute<ExportColumnAttribute>();
                 if (attribute != null)
                 {
-                    properties.Add((prop, attribute));
+                    properties.Add(new ColumnInfo() { Prop = prop, Attr = attribute });
                 }
             }
 
@@ -63,6 +63,12 @@ namespace Pericia.DataExport
                 }
                 _exporter.NewLine();
             }
+        }
+
+        private class ColumnInfo
+        {
+            public PropertyInfo Prop { get; set; }
+            public ExportColumnAttribute Attr { get; set; }
         }
 
         public Stream Export<T>(IEnumerable<T> data)
