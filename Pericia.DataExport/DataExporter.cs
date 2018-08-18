@@ -17,6 +17,9 @@ namespace Pericia.DataExport
                 case ExportFormat.Csv:
                     _exporter = new CsvExporter();
                     break;
+                case ExportFormat.Xlsx:
+                    _exporter = new XlsxExporter();
+                    break;
                 default:
                     throw new NotImplementedException();
             }

@@ -7,5 +7,6 @@ namespace Pericia.DataExport
     public enum ExportFormat
     {
         Csv,
+        Xlsx
     }
 }
