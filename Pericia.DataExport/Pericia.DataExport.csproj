@@ -1,7 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Guillaume Lacasa</Authors>
+    <Company>Pericia</Company>
+    <Description>Easily export your data to a csv or xlsx file</Description>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/pericia/Pericia.DataExport/master/LICENSE.txt</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/pericia/Pericia.DataExport</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/pericia/Pericia.DataExport</RepositoryUrl>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>../pericia.dataexport.snk</AssemblyOriginatorKeyFile>
+    <DelaySign>false</DelaySign>
   </PropertyGroup>
 
   <ItemGroup>
