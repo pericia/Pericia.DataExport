@@ -40,11 +40,11 @@ namespace Pericia.DataExport
 
         }
 
-        protected override void NewSheet()
+        protected override void NewSheet(string name)
         {
             var sheetId = "rId" + (++sheetCount);
 
-            Sheet sheet = new Sheet() { Name = "Sheet"+sheetCount, SheetId = sheetCount, Id = sheetId };
+            Sheet sheet = new Sheet() { Name = name ?? ("Sheet" + sheetCount), SheetId = sheetCount, Id = sheetId };
             sheets.Append(sheet);
 
             WorksheetPart worksheetPart = workbookPart.AddNewPart<WorksheetPart>(sheetId);

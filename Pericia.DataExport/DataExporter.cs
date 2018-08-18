@@ -8,10 +8,12 @@ namespace Pericia.DataExport
 {
     public abstract class DataExporter
     {
-        protected MemoryStream stream = new MemoryStream();       
+        protected MemoryStream stream = new MemoryStream();
 
-        public void AddSheet<T>(IEnumerable<T> data)
+        public void AddSheet<T>(IEnumerable<T> data, string name=null)
         {
+            NewSheet(name);
+
             var typeInfo = typeof(T).GetTypeInfo();
 
             var properties = new List<ColumnInfo>();
@@ -23,9 +25,7 @@ namespace Pericia.DataExport
                     properties.Add(new ColumnInfo() { Prop = prop, Attr = attribute });
                 }
             }
-
-            NewSheet();
-
+            
             properties = properties.OrderBy(a => a.Attr.Order).ToList();
             // Write headers
             foreach (var prop in properties)
@@ -56,7 +56,7 @@ namespace Pericia.DataExport
 
 
 
-        protected abstract void NewSheet();
+        protected abstract void NewSheet(string name);
         protected abstract void NewLine();
         protected abstract void WriteData(string data);
 
