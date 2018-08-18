@@ -10,7 +10,7 @@ namespace Pericia.DataExport.Tests
         [Fact]
         public void Test1()
         {
-            var exporter = new DataExporter(ExportFormat.Csv);
+            var exporter = new CsvDataExporter();
 
             var data = new List<SampleData>()
             {

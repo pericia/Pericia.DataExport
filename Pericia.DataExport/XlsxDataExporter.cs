@@ -6,11 +6,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace Pericia.DataExport.Exporters
+namespace Pericia.DataExport
 {
-    internal class XlsxExporter : IFormatExporter
+    public class XlsxDataExporter : DataExporter
     {
-        private MemoryStream stream;
         private SpreadsheetDocument package;
 
         int currentCol = 0;
@@ -21,9 +20,8 @@ namespace Pericia.DataExport.Exporters
         Sheets sheets;
         uint sheetCount = 0;
 
-        public XlsxExporter()
+        public XlsxDataExporter()
         {
-            stream = new MemoryStream();
             package = SpreadsheetDocument.Create(stream, SpreadsheetDocumentType.Workbook);
 
             InitWorkbook();
@@ -42,7 +40,7 @@ namespace Pericia.DataExport.Exporters
 
         }
 
-        public void NewSheet()
+        protected override void NewSheet()
         {
             var sheetId = "rId" + (++sheetCount);
 
@@ -62,7 +60,7 @@ namespace Pericia.DataExport.Exporters
 
         }
 
-        public void NewLine()
+        protected override void NewLine()
         {
             currentCol = 1;
             currentRow++;
@@ -70,7 +68,7 @@ namespace Pericia.DataExport.Exporters
             sheetData.Append(row);
         }
 
-        public void WriteData(string data)
+        protected override void WriteData(string data)
         {
             Cell cell = new Cell()
             {
@@ -108,10 +106,9 @@ namespace Pericia.DataExport.Exporters
         }
 
 
-        public Stream GetStream()
+        public override MemoryStream GetFile()
         {
             package.Dispose();
-
             stream.Position = 0;
             return stream;
         }

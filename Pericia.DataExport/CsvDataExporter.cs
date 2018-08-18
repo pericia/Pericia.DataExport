@@ -4,11 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Pericia.DataExport.Exporters
+namespace Pericia.DataExport
 {
-    internal class CsvExporter : IFormatExporter
+    public class CsvDataExporter : DataExporter
     {
-        private MemoryStream stream;
         private StreamWriter writer;
 
         private List<string> currentLine;
@@ -19,31 +18,23 @@ namespace Pericia.DataExport.Exporters
         private static readonly char[] CHARACTERS_THAT_MUST_BE_QUOTED = { SEPARATOR, '"', '\n' };
 
 
-        public CsvExporter()
+        public CsvDataExporter()
         {
-            stream = new MemoryStream();
             writer = new StreamWriter(stream);
             currentLine = new List<string>();
         }
 
-        public void NewLine()
+        protected override void NewLine()
         {
             writer.WriteLine(String.Join(SEPARATOR.ToString(), currentLine));
             currentLine = new List<string>();
         }
 
-        public void WriteData(string data)
+        protected override void WriteData(string data)
         {
             currentLine.Add(Escape(data));
         }
-
-        public Stream GetStream()
-        {
-            writer.Flush();
-            stream.Position = 0;
-            return stream;
-        }
-
+        
 
         private static string Escape(object o)
         {
@@ -68,13 +59,20 @@ namespace Pericia.DataExport.Exporters
         }
 
         bool csvStarted = false;
-        public void NewSheet()
+        protected override void NewSheet()
         {
             if (csvStarted)
             {
                 throw new NotSupportedException("You can't add several sheets to a csv file");
             }
             csvStarted = true;
+        }
+
+        public override MemoryStream GetFile()
+        {
+            writer.Flush();
+            stream.Position = 0;
+            return stream;
         }
     }
 }
