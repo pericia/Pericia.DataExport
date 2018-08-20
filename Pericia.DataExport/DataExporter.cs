@@ -52,6 +52,37 @@ namespace Pericia.DataExport
             return GetFile();
         }
 
+#if !NETSTANDARD1_3
+        public void AddSheet(System.Data.Common.DbDataReader reader, string name = null)
+        {
+            NewSheet(name);
+
+            // Write headers
+            for (int i = 0; i < reader.FieldCount; i++)
+            {
+                WriteData(reader.GetName(i));
+            }
+            NewLine();
+
+            while (reader.Read())
+            {
+                for (int i = 0; i < reader.FieldCount; i++)
+                {
+                    WriteData(reader.GetValue(i).ToString());
+                }
+                NewLine();
+            }
+        }
+
+        public MemoryStream Export(System.Data.Common.DbDataReader reader)
+        {
+            AddSheet(reader);
+
+            return GetFile();
+        }
+
+#endif
+
         public abstract MemoryStream GetFile();
 
 

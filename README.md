@@ -20,7 +20,7 @@ The data exported will be a file with column titles on the first line, and all y
 
 To export your data, you will need to define how it will be exported
 
-### Using Attributes on your model
+### Export using Attributes on your model
 
 Add the attribute `ExportColumn` on the properties you want to export. The attributes contains 2 properties : `Title` (the name of the column) ans `Order` (tu sort your columns)
 
@@ -58,6 +58,19 @@ While the csv exporter will only allow you to export one set of data, with the x
 	xlsxExporter.AddSheet(data1, name="sheet title 1");
 	xlsxExporter.AddSheet(data2, name="sheet title 2");
 	var xlsxResult = exporter.GetFile();
+
+### Export using SQL Data Reader
+
+If you want to export a query result without binding it to a model, you can use an `SqlDataReader` :
+
+	using (SqlConnection connection = new SqlConnection(connectionString))
+	{
+		SqlCommand command = new SqlCommand("SELECT OrderID, CustomerID FROM dbo.Orders", connection);
+		connection.Open();
+		SqlDataReader reader = command.ExecuteReader();
+		var xlsxExporter = new XlsxDataExporter();
+		var xlsxResult = exporter.Export(reader);
+	}
 
 ### Result
 
