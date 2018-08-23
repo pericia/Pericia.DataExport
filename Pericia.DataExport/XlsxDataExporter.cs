@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Pericia.DataExport
 {
@@ -43,8 +44,9 @@ namespace Pericia.DataExport
         protected override void NewSheet(string name)
         {
             var sheetId = "rId" + (++sheetCount);
+            name = NewSheetName(name);
 
-            Sheet sheet = new Sheet() { Name = name ?? ("Sheet" + sheetCount), SheetId = sheetCount, Id = sheetId };
+            Sheet sheet = new Sheet() { Name = name, SheetId = sheetCount, Id = sheetId };
             sheets.Append(sheet);
 
             WorksheetPart worksheetPart = workbookPart.AddNewPart<WorksheetPart>(sheetId);
@@ -57,9 +59,8 @@ namespace Pericia.DataExport
             currentRow = 0;
 
             NewLine();
-
         }
-
+        
         protected override void NewLine()
         {
             currentCol = 1;
@@ -111,6 +112,35 @@ namespace Pericia.DataExport
             package.Dispose();
             stream.Position = 0;
             return stream;
+        }
+
+
+        
+        private List<string> sheetNames = new List<string>();
+        protected string NewSheetName(string suggestedName)
+        {
+            if (suggestedName == null)
+            {
+                suggestedName = "Sheet" + sheetCount;
+            }
+
+            while (sheetNames.Contains(suggestedName))
+            {
+                Regex numberRegex = new Regex("([0-9]+)$");
+                var match = numberRegex.Match(suggestedName);
+                if (match.Success)
+                {
+                    var newCount = int.Parse(match.Groups[1].Value) + 1;
+                    suggestedName = numberRegex.Replace(suggestedName, newCount.ToString());
+                }
+                else
+                {
+                    suggestedName = suggestedName + "1";
+                }
+            }
+
+            sheetNames.Add(suggestedName);
+            return suggestedName;
         }
 
     }

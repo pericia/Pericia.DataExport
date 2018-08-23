@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Xunit;
 
-namespace Pericia.DataExport.Tests
+namespace Pericia.DataExport
 {
     public class ExportTest
     {
