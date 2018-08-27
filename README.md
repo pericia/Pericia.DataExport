@@ -45,10 +45,10 @@ You can use either `CsvDataExporter` or `XlsxDataExporter` :
 	};
 
 	var csvExporter = new CsvDataExporter();
-	var csvResult = exporter.Export(data);
+	var csvResult = csvExporter.Export(data);
 	
 	var xlsxExporter = new XlsxDataExporter();
-	var xlsxResult = exporter.Export(data);
+	var xlsxResult = xlsxExporter.Export(data);
 
 ### Create Xlsx file with several sheets
 
@@ -57,7 +57,7 @@ While the csv exporter will only allow you to export one set of data, with the x
 	var xlsxExporter = new XlsxDataExporter();
 	xlsxExporter.AddSheet(data1, name="sheet title 1");
 	xlsxExporter.AddSheet(data2, name="sheet title 2");
-	var xlsxResult = exporter.GetFile();
+	var xlsxResult = xlsxExporter.GetFile();
 
 ### Export using SQL Data Reader
 
@@ -69,7 +69,7 @@ If you want to export a query result without binding it to a model, you can use 
 		connection.Open();
 		SqlDataReader reader = command.ExecuteReader();
 		var xlsxExporter = new XlsxDataExporter();
-		var xlsxResult = exporter.Export(reader);
+		var xlsxResult = xlsxExporter.Export(reader);
 	}
 
 ### Result
