@@ -7,7 +7,7 @@
     <Description>Easily export your data to a csv or xlsx file</Description>
     <PackageLicenseUrl>https://raw.githubusercontent.com/pericia/Pericia.DataExport/master/LICENSE.txt</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/pericia/Pericia.DataExport</PackageProjectUrl>
-    <RepositoryUrl>https://pericia.visualstudio.com/Pericia.DataExport/_git/Pericia.DataExport</RepositoryUrl>
+    <RepositoryUrl>https://github.com/pericia/Pericia.DataExport.git</RepositoryUrl>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>../pericia.dataexport.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
@@ -19,6 +19,7 @@
   <ItemGroup>
     <PackageReference Include="DocumentFormat.OpenXml" Version="2.8.1" />
     <PackageReference Include="Microsoft.SourceLink.Vsts.Git" Version="1.0.0-beta-63127-02" PrivateAssets="All"/>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02" PrivateAssets="All"/>
   </ItemGroup>
 
 </Project>
