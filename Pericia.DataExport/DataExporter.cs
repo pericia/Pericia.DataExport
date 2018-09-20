@@ -10,7 +10,7 @@ namespace Pericia.DataExport
     {
         protected MemoryStream stream = new MemoryStream();
 
-        public void AddSheet<T>(IEnumerable<T> data, string name=null)
+        public void AddSheet<T>(IEnumerable<T> data, string name = null)
         {
             NewSheet(name);
 
@@ -25,7 +25,7 @@ namespace Pericia.DataExport
                     properties.Add(new ColumnInfo() { Prop = prop, Attr = attribute });
                 }
             }
-            
+
             properties = properties.OrderBy(a => a.Attr.Order).ToList();
             // Write headers
             foreach (var prop in properties)
@@ -38,7 +38,7 @@ namespace Pericia.DataExport
             {
                 foreach (var prop in properties)
                 {
-                    WriteData(prop.Prop.GetValue(line).ToString());
+                    WriteData(prop.Prop.GetValue(line)?.ToString());
                 }
                 NewLine();
             }
@@ -68,7 +68,12 @@ namespace Pericia.DataExport
             {
                 for (int i = 0; i < reader.FieldCount; i++)
                 {
-                    WriteData(reader.GetValue(i).ToString());
+                    var value = reader.GetValue(i);
+                    if (value == null || value == DBNull.Value)
+                    {
+                        value = "";
+                    }
+                    WriteData(value.ToString());
                 }
                 NewLine();
             }
