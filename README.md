@@ -1,5 +1,7 @@
 # Pericia.DataExport
 
+[![Build status](https://pericia.visualstudio.com/Pericia.DataExport/_apis/build/status/Pericia.DataExport-CI)](https://pericia.visualstudio.com/Pericia.DataExport/_build/latest?definitionId=7)
+
 Pericia.DataExport is a dotnet library to export any `IEnumerable<T>` to an xlsx or csv file.
 
 ## Install 
