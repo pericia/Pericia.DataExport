@@ -52,7 +52,6 @@ namespace Pericia.DataExport
             return GetFile();
         }
 
-#if !NETSTANDARD1_3
         public void AddSheet(System.Data.Common.DbDataReader reader, string name = null)
         {
             NewSheet(name);
@@ -85,9 +84,7 @@ namespace Pericia.DataExport
 
             return GetFile();
         }
-
-#endif
-
+        
         public abstract MemoryStream GetFile();
 
 
