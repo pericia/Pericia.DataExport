@@ -6,9 +6,9 @@ using System.Reflection;
 
 namespace Pericia.DataExport
 {
-    public abstract class DataExporter
+    public abstract class DataExporter : IDisposable
     {
-        protected MemoryStream stream = new MemoryStream();
+        protected MemoryStream stream { get; } = new MemoryStream();
 
         public void AddSheet<T>(IEnumerable<T> data, string name = null)
         {
@@ -97,6 +97,18 @@ namespace Pericia.DataExport
         {
             internal PropertyInfo Prop { get; set; }
             internal ExportColumnAttribute Attr { get; set; }
+        }
+
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            stream.Dispose();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -26,7 +27,7 @@ namespace Pericia.DataExport
 
         protected override void NewLine()
         {
-            writer.WriteLine(String.Join(SEPARATOR.ToString(), currentLine));
+            writer.WriteLine(String.Join(SEPARATOR.ToString(CultureInfo.InvariantCulture), currentLine));
             currentLine = new List<string>();
         }
 
@@ -73,6 +74,12 @@ namespace Pericia.DataExport
             writer.Flush();
             stream.Position = 0;
             return stream;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+            writer.Dispose();
         }
     }
 }

@@ -3,6 +3,7 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -73,7 +74,7 @@ namespace Pericia.DataExport
         {
             Cell cell = new Cell()
             {
-                CellReference = ExcelColumnFromNumber(currentCol++) + currentRow.ToString(),
+                CellReference = ExcelColumnFromNumber(currentCol++) + currentRow.ToString(CultureInfo.InvariantCulture),
                 DataType = CellValues.InlineString
             };
             InlineString inlineString = new InlineString();
@@ -130,8 +131,8 @@ namespace Pericia.DataExport
                 var match = numberRegex.Match(suggestedName);
                 if (match.Success)
                 {
-                    var newCount = int.Parse(match.Groups[1].Value) + 1;
-                    suggestedName = numberRegex.Replace(suggestedName, newCount.ToString());
+                    var newCount = int.Parse(match.Groups[1].Value, CultureInfo.InvariantCulture) + 1;
+                    suggestedName = numberRegex.Replace(suggestedName, newCount.ToString(CultureInfo.InvariantCulture));
                 }
                 else
                 {
