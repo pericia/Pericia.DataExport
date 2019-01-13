@@ -5,9 +5,9 @@
     <Authors>Guillaume Lacasa</Authors>
     <Company>Pericia</Company>
     <Description>Easily export your data to a csv or xlsx file</Description>
-    <PackageLicenseUrl>https://pericia.visualstudio.com/_git/Pericia.DataExport?path=%2FLICENSE.txt</PackageLicenseUrl>
-    <PackageProjectUrl>https://pericia.visualstudio.com/Pericia.DataExport</PackageProjectUrl>
-    <RepositoryUrl>https://pericia.visualstudio.com/Pericia.DataExport/_git/Pericia.DataExport</RepositoryUrl>
+    <PackageLicenseUrl>https://dev.azure.com/pericia/_git/Pericia.DataExport?path=%2FLICENSE.txt</PackageLicenseUrl>
+    <PackageProjectUrl>https://dev.azure.com/pericia/Pericia.DataExport</PackageProjectUrl>
+    <RepositoryUrl>https://dev.azure.com/pericia/Pericia.DataExport/_git/Pericia.DataExport</RepositoryUrl>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>../pericia.dataexport.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
