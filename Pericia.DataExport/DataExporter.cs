@@ -38,7 +38,7 @@ namespace Pericia.DataExport
             {
                 foreach (var prop in properties)
                 {
-                    WriteData(prop.Prop.GetValue(line)?.ToString());
+                    WriteData(prop.Prop.GetValue(line));
                 }
                 NewLine();
             }
@@ -72,7 +72,7 @@ namespace Pericia.DataExport
                     {
                         value = "";
                     }
-                    WriteData(value.ToString());
+                    WriteData(value);
                 }
                 NewLine();
             }
@@ -91,7 +91,7 @@ namespace Pericia.DataExport
 
         protected abstract void NewSheet(string name);
         protected abstract void NewLine();
-        protected abstract void WriteData(string data);
+        protected abstract void WriteData(object data);
 
         private class ColumnInfo
         {

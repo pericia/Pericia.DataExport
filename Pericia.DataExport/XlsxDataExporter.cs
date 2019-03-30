@@ -70,18 +70,41 @@ namespace Pericia.DataExport
             sheetData.Append(row);
         }
 
-        protected override void WriteData(string data)
+        protected override void WriteData(object data)
         {
             Cell cell = new Cell()
             {
                 CellReference = ExcelColumnFromNumber(currentCol++) + currentRow.ToString(CultureInfo.InvariantCulture),
-                DataType = CellValues.InlineString
             };
-            InlineString inlineString = new InlineString();
-            Text text = new Text();
-            text.Text = data;
-            inlineString.Append(text);
-            cell.Append(inlineString);
+
+            if (data is sbyte || data is byte || data is short || data is ushort || data is int || data is uint
+                || data is long || data is ulong || data is float || data is double || data is decimal)
+            {
+                cell.DataType = CellValues.Number;
+                var toStringMethod = data.GetType().GetMethod("ToString", new Type[] { typeof(IFormatProvider) });
+                var textValue = (string)toStringMethod.Invoke(data, new object[] { CultureInfo.InvariantCulture });
+                cell.CellValue = new CellValue(textValue);
+            }
+            else if (data is DateTime)
+            {
+                // TODO date style
+                cell.DataType = CellValues.String;
+                //cell.StyleIndex = 1U;
+                var dateTime = (DateTime)data;
+                //textValue = dateTime.ToString("s", CultureInfo.InvariantCulture);
+                cell.CellValue = new CellValue(dateTime.ToShortDateString());
+            }
+            else if (data is bool)
+            {
+                cell.DataType = CellValues.Boolean;
+                cell.CellValue = new CellValue((bool)data ? "1" : "0");
+            }
+            else
+            {
+                cell.DataType = CellValues.String;
+                cell.CellValue = new CellValue(data.ToString());
+            }
+
             row.Append(cell);
         }
 

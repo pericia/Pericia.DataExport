@@ -31,7 +31,7 @@ namespace Pericia.DataExport
             currentLine = new List<string>();
         }
 
-        protected override void WriteData(string data)
+        protected override void WriteData(object data)
         {
             currentLine.Add(Escape(data));
         }
