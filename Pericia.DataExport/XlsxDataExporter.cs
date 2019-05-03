@@ -167,6 +167,8 @@ namespace Pericia.DataExport
             }
             else
             {
+                if (data == null) return;
+
                 cell.DataType = CellValues.String;
                 cell.CellValue = new CellValue(data.ToString());
             }
