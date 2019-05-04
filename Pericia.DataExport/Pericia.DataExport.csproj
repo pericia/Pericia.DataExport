@@ -5,9 +5,9 @@
     <Authors>Guillaume Lacasa</Authors>
     <Company>Pericia</Company>
     <Description>Easily export your data to a csv or xlsx file</Description>
-    <PackageLicenseUrl>https://dev.azure.com/pericia/_git/Pericia.DataExport?path=%2FLICENSE.txt</PackageLicenseUrl>
-    <PackageProjectUrl>https://dev.azure.com/pericia/Pericia.DataExport</PackageProjectUrl>
-    <RepositoryUrl>https://dev.azure.com/pericia/Pericia.DataExport/_git/Pericia.DataExport</RepositoryUrl>
+    <PackageLicenseUrl>https://github.com/pericia/Pericia.DataExport/blob/master/LICENSE.txt</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/pericia/Pericia.DataExport</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/pericia/Pericia.DataExport.git</RepositoryUrl>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>../pericia.dataexport.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
@@ -15,14 +15,6 @@
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
-    <CodeAnalysisRuleSet></CodeAnalysisRuleSet>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
-    <CodeAnalysisRuleSet></CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <ItemGroup>
@@ -34,7 +26,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.SourceLink.Vsts.Git" Version="1.0.0-beta2-18618-05" PrivateAssets="All" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-18618-05" PrivateAssets="All" />
   </ItemGroup>
 
