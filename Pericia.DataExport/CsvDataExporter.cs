@@ -60,7 +60,7 @@ namespace Pericia.DataExport
         }
 
         bool csvStarted = false;
-        protected override void NewSheet(string name)
+        protected override void NewSheet(string? name)
         {
             if (csvStarted)
             {

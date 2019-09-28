@@ -16,11 +16,11 @@ namespace Pericia.DataExport
 
         int currentCol = 0;
         int currentRow = 0;
-        Row row;
         WorkbookPart workbookPart;
-        SheetData sheetData;
         Sheets sheets;
         uint sheetCount = 0;
+        SheetData? sheetData;
+        Row? row;
 
         private Lazy<uint> dateStyleIndex;
 
@@ -28,11 +28,6 @@ namespace Pericia.DataExport
         {
             package = SpreadsheetDocument.Create(stream, SpreadsheetDocumentType.Workbook);
 
-            InitWorkbook();
-        }
-
-        private void InitWorkbook()
-        {
             workbookPart = package.AddWorkbookPart();
 
             Workbook workbook = new Workbook();
@@ -111,7 +106,7 @@ namespace Pericia.DataExport
             return 1;
         }
 
-        protected override void NewSheet(string name)
+        protected override void NewSheet(string? name)
         {
             var sheetId = "rId" + (++sheetCount);
             name = NewSheetName(name);
@@ -133,6 +128,11 @@ namespace Pericia.DataExport
 
         protected override void NewLine()
         {
+            if (sheetData == null)
+            {
+                throw new Exception("You must create a sheet before adding a new line;");
+            }
+
             currentCol = 1;
             currentRow++;
             row = new Row();
@@ -141,6 +141,11 @@ namespace Pericia.DataExport
 
         protected override void WriteData(object data)
         {
+            if (row == null)
+            {
+                throw new Exception("You must create a new line before writing data");
+            }
+
             Cell cell = new Cell()
             {
                 CellReference = ExcelColumnFromNumber(currentCol++) + currentRow.ToString(CultureInfo.InvariantCulture),
@@ -209,7 +214,7 @@ namespace Pericia.DataExport
 
 
         private List<string> sheetNames = new List<string>();
-        protected string NewSheetName(string suggestedName)
+        protected string NewSheetName(string? suggestedName)
         {
             if (suggestedName == null)
             {

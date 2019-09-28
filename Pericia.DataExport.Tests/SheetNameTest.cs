@@ -32,7 +32,7 @@ namespace Pericia.DataExport
 
     public class SheetNameTestExporter : XlsxDataExporter
     {
-        public string TestSheetName(string suggestedName)
+        public string TestSheetName(string? suggestedName)
         {
             return base.NewSheetName(suggestedName);
         }

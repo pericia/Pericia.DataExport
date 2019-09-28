@@ -10,7 +10,7 @@ namespace Pericia.DataExport
     {
         protected MemoryStream stream { get; } = new MemoryStream();
 
-        public void AddSheet<T>(IEnumerable<T> data, string name = null)
+        public void AddSheet<T>(IEnumerable<T> data, string? name = null)
         {
             NewSheet(name);
 
@@ -22,7 +22,7 @@ namespace Pericia.DataExport
                 var attribute = prop.GetCustomAttribute<ExportColumnAttribute>();
                 if (attribute != null)
                 {
-                    properties.Add(new ColumnInfo() { Prop = prop, Attr = attribute });
+                    properties.Add(new ColumnInfo(prop, attribute));
                 }
             }
 
@@ -52,7 +52,7 @@ namespace Pericia.DataExport
             return GetFile();
         }
 
-        public void AddSheet(System.Data.Common.DbDataReader reader, string name = null)
+        public void AddSheet(System.Data.Common.DbDataReader reader, string? name = null)
         {
             NewSheet(name);
 
@@ -84,22 +84,26 @@ namespace Pericia.DataExport
 
             return GetFile();
         }
-        
+
         public abstract MemoryStream GetFile();
+        
 
-
-
-        protected abstract void NewSheet(string name);
+        protected abstract void NewSheet(string? name);
         protected abstract void NewLine();
         protected abstract void WriteData(object data);
 
         private class ColumnInfo
         {
+            public ColumnInfo(PropertyInfo prop, ExportColumnAttribute attr)
+            {
+                Prop = prop;
+                Attr = attr;
+            }
+
             internal PropertyInfo Prop { get; set; }
             internal ExportColumnAttribute Attr { get; set; }
         }
-
-
+        
         public void Dispose()
         {
             Dispose(true);

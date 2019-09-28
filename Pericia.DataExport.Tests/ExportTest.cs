@@ -14,9 +14,9 @@ namespace Pericia.DataExport
 
             var data = new List<SampleData>()
             {
-                new SampleData{ IntData=5, TextData="Hello"},
-                new SampleData{ IntData=20, TextData="A,B;C"},
-                new SampleData{ IntData=10, TextData="A\"B,C"},
+                new SampleData( 5, "Hello"),
+                new SampleData(20,"A,B;C"),
+                new SampleData(10, "A\"B,C"),
             };
 
             var exportResult = exporter.Export(data);
@@ -32,6 +32,11 @@ namespace Pericia.DataExport
 
     public class SampleData
     {
+        public SampleData(int intData, string textData)
+        {
+            IntData = intData;
+            TextData = textData;
+        }
 
         [ExportColumn(Title = "Number", Order = 1)]
         public int IntData { get; set; }
