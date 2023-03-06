@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml.Math;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,6 +10,38 @@ namespace Pericia.DataExport
     public abstract class DataExporter : IDisposable
     {
         protected MemoryStream stream { get; } = new MemoryStream();
+
+        public void AddSheet(IEnumerable<object> data, string[] columns, string? name = null)
+        {
+            var columnsObject = columns.Select(c => new ExportColumn { Property = c, Title = c });
+            AddSheet(data, columnsObject.ToArray(), name);
+        }
+
+        public void AddSheet(IEnumerable<object> data, ExportColumn[] columns, string? name = null)
+        {
+            NewSheet(name);
+
+            foreach (var column in columns)
+            {
+                WriteData(column.Title);
+            }
+
+            NewLine();
+
+            foreach (var line in data)
+            {
+                var lineType = line.GetType();
+
+                foreach (var column in columns)
+                {
+                    var property = lineType.GetProperty(column.Property, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+                    var value = property?.GetValue(line);
+                    WriteData(value ?? "");
+                }
+
+                NewLine();
+            }
+        }
 
         public void AddSheet<T>(IEnumerable<T> data, string? name = null)
         {
@@ -44,14 +77,6 @@ namespace Pericia.DataExport
             }
         }
 
-
-        public MemoryStream Export<T>(IEnumerable<T> data)
-        {
-            AddSheet(data);
-
-            return GetFile();
-        }
-
         public void AddSheet(System.Data.Common.DbDataReader reader, string? name = null)
         {
             NewSheet(name);
@@ -78,6 +103,13 @@ namespace Pericia.DataExport
             }
         }
 
+        public MemoryStream Export<T>(IEnumerable<T> data)
+        {
+            AddSheet(data);
+
+            return GetFile();
+        }
+
         public MemoryStream Export(System.Data.Common.DbDataReader reader)
         {
             AddSheet(reader);
@@ -86,7 +118,7 @@ namespace Pericia.DataExport
         }
 
         public abstract MemoryStream GetFile();
-        
+
 
         protected abstract void NewSheet(string? name);
         protected abstract void NewLine();
@@ -103,7 +135,7 @@ namespace Pericia.DataExport
             internal PropertyInfo Prop { get; set; }
             internal ExportColumnAttribute Attr { get; set; }
         }
-        
+
         public void Dispose()
         {
             Dispose(true);
