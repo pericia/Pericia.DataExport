@@ -12,6 +12,8 @@ namespace Pericia.DataExport
 {
     public class XlsxDataExporter : DataExporter
     {
+        private const int maxRow = 1048576;
+
         private SpreadsheetDocument package;
 
         int currentCol = 0;
@@ -135,6 +137,9 @@ namespace Pericia.DataExport
 
             currentCol = 1;
             currentRow++;
+
+            if (currentRow >= maxRow) return;
+
             row = new Row();
             sheetData.Append(row);
         }
@@ -145,6 +150,8 @@ namespace Pericia.DataExport
             {
                 throw new Exception("You must create a new line before writing data");
             }
+
+            if (currentRow >= maxRow) return;
 
             Cell cell = new Cell()
             {
