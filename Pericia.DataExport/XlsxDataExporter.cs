@@ -144,7 +144,7 @@ namespace Pericia.DataExport
             sheetData.Append(row);
         }
 
-        protected override void WriteDataInternal(object data)
+        protected override void WriteDataRaw(object data)
         {
             if (row == null)
             {

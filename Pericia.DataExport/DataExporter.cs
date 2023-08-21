@@ -12,6 +12,7 @@ namespace Pericia.DataExport
         protected MemoryStream stream { get; } = new MemoryStream();
 
         private Dictionary<Type, Func<object, object>>? TypeDataConverter { get; set; }
+        
 
         public void AddSheet(IEnumerable<object> data, string[] columns, string? name = null)
         {
@@ -23,11 +24,11 @@ namespace Pericia.DataExport
         {
             NewSheet(name);
 
+            // Write headers
             foreach (var column in columns)
             {
-                WriteData(column.Title);
+                WriteDataRaw(column.Title);
             }
-
             NewLine();
 
             foreach (var line in data)
@@ -38,7 +39,7 @@ namespace Pericia.DataExport
                 {
                     var property = lineType.GetProperty(column.Property, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
                     var value = property?.GetValue(line);
-                    WriteData(value ?? "");
+                    WriteDataValue(value ?? "");
                 }
 
                 NewLine();
@@ -65,7 +66,7 @@ namespace Pericia.DataExport
             // Write headers
             foreach (var prop in properties)
             {
-                WriteData(prop.Attr.Title);
+                WriteDataRaw(prop.Attr.Title);
             }
             NewLine();
 
@@ -73,7 +74,7 @@ namespace Pericia.DataExport
             {
                 foreach (var prop in properties)
                 {
-                    WriteData(prop.Prop.GetValue(line));
+                    WriteDataValue(prop.Prop.GetValue(line));
                 }
                 NewLine();
             }
@@ -86,7 +87,7 @@ namespace Pericia.DataExport
             // Write headers
             for (int i = 0; i < reader.FieldCount; i++)
             {
-                WriteData(reader.GetName(i));
+                WriteDataRaw(reader.GetName(i));
             }
             NewLine();
 
@@ -99,7 +100,7 @@ namespace Pericia.DataExport
                     {
                         value = "";
                     }
-                    WriteData(value);
+                    WriteDataValue(value);
                 }
                 NewLine();
             }
@@ -136,7 +137,7 @@ namespace Pericia.DataExport
         }
 
 
-        private void WriteData(object data)
+        private void WriteDataValue(object data)
         {
             if (TypeDataConverter != null)
             {
@@ -148,10 +149,10 @@ namespace Pericia.DataExport
                 }
             }
 
-            WriteDataInternal(data);
+            WriteDataRaw(data);
         }
 
-        protected abstract void WriteDataInternal(object data);
+        protected abstract void WriteDataRaw(object data);
 
         private class ColumnInfo
         {
