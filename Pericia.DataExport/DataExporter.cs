@@ -11,6 +11,8 @@ namespace Pericia.DataExport
     {
         protected MemoryStream stream { get; } = new MemoryStream();
 
+        private Dictionary<Type, Func<object, object>>? TypeDataConverter { get; set; }
+
         public void AddSheet(IEnumerable<object> data, string[] columns, string? name = null)
         {
             var columnsObject = columns.Select(c => new ExportColumn { Property = c, Title = c });
@@ -122,7 +124,34 @@ namespace Pericia.DataExport
 
         protected abstract void NewSheet(string? name);
         protected abstract void NewLine();
-        protected abstract void WriteData(object data);
+
+        public void AddDataConverter<T>(Func<T, object> converter)
+        {
+            if (TypeDataConverter == null)
+            {
+                TypeDataConverter = new Dictionary<Type, Func<object, object>>();
+            }
+
+            TypeDataConverter.Add(typeof(T), o => converter((T)o));
+        }
+
+
+        private void WriteData(object data)
+        {
+            if (TypeDataConverter != null)
+            {
+                var type = data.GetType();
+                if (TypeDataConverter.ContainsKey(type))
+                {
+                    var converter = TypeDataConverter[type];
+                    data = converter(data);
+                }
+            }
+
+            WriteDataInternal(data);
+        }
+
+        protected abstract void WriteDataInternal(object data);
 
         private class ColumnInfo
         {
