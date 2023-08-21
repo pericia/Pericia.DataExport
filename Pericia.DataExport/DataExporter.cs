@@ -11,8 +11,10 @@ namespace Pericia.DataExport
     {
         protected MemoryStream stream { get; } = new MemoryStream();
 
+        private Dictionary<string, Func<object, object>>? PropertyDataConverter { get; set; }
         private Dictionary<Type, Func<object, object>>? TypeDataConverter { get; set; }
-        
+        private Func<object, string, object>? GlobalDataConverter { get; set; }
+
 
         public void AddSheet(IEnumerable<object> data, string[] columns, string? name = null)
         {
@@ -39,7 +41,7 @@ namespace Pericia.DataExport
                 {
                     var property = lineType.GetProperty(column.Property, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
                     var value = property?.GetValue(line);
-                    WriteDataValue(value ?? "");
+                    WriteDataValue(column.Property, value ?? "");
                 }
 
                 NewLine();
@@ -74,7 +76,7 @@ namespace Pericia.DataExport
             {
                 foreach (var prop in properties)
                 {
-                    WriteDataValue(prop.Prop.GetValue(line));
+                    WriteDataValue(prop.Prop.Name, prop.Prop.GetValue(line));
                 }
                 NewLine();
             }
@@ -95,12 +97,13 @@ namespace Pericia.DataExport
             {
                 for (int i = 0; i < reader.FieldCount; i++)
                 {
+                    var prop = reader.GetName(i);
                     var value = reader.GetValue(i);
                     if (value == null || value == DBNull.Value)
                     {
                         value = "";
                     }
-                    WriteDataValue(value);
+                    WriteDataValue(prop, value);
                 }
                 NewLine();
             }
@@ -126,8 +129,28 @@ namespace Pericia.DataExport
         protected abstract void NewSheet(string? name);
         protected abstract void NewLine();
 
-        public void AddDataConverter<T>(Func<T, object> converter)
+        public void AddPropertyDataConverter(string property, Func<object, object> converter)
         {
+            if (converter == null)
+            {
+                throw new ArgumentNullException(nameof(converter));
+            }
+
+            if (PropertyDataConverter == null)
+            {
+                PropertyDataConverter = new Dictionary<string, Func<object, object>>();
+            }
+
+            PropertyDataConverter.Add(property, converter);
+        }
+
+        public void AddTypeDataConverter<T>(Func<T, object> converter)
+        {
+            if (converter == null)
+            {
+                throw new ArgumentNullException(nameof(converter));
+            }
+
             if (TypeDataConverter == null)
             {
                 TypeDataConverter = new Dictionary<Type, Func<object, object>>();
@@ -136,17 +159,30 @@ namespace Pericia.DataExport
             TypeDataConverter.Add(typeof(T), o => converter((T)o));
         }
 
-
-        private void WriteDataValue(object data)
+        public void AddGlobalDataConverter(Func<object, string, object> converter)
         {
-            if (TypeDataConverter != null)
+            if (converter == null)
             {
-                var type = data.GetType();
-                if (TypeDataConverter.ContainsKey(type))
-                {
-                    var converter = TypeDataConverter[type];
-                    data = converter(data);
-                }
+                throw new ArgumentNullException(nameof(converter));
+            }
+
+            GlobalDataConverter = converter;
+        }
+
+
+        private void WriteDataValue(string property, object data)
+        {
+            if (PropertyDataConverter != null && PropertyDataConverter.TryGetValue(property, out Func<object, object> propConverter))
+            {
+                data = propConverter(data);
+            }
+            else if (TypeDataConverter != null && TypeDataConverter.TryGetValue(data.GetType(), out Func<object, object> typeConverter))
+            {
+                data = typeConverter(data);
+            }
+            else if (GlobalDataConverter != null)
+            {
+                data = GlobalDataConverter(data, property);
             }
 
             WriteDataRaw(data);

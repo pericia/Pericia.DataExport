@@ -34,22 +34,24 @@ namespace Pericia.DataExport
         {
             var exporter = new CsvDataExporter();
 
-            exporter.AddDataConverter<bool>(b => b ? "👍" : "❌");
+            exporter.AddPropertyDataConverter(nameof(SampleData.IntData), i => "_" + i + "_");
+            exporter.AddTypeDataConverter<bool>(b => b ? "👍" : "❌");
+            exporter.AddGlobalDataConverter((val, prop) => prop + "=" + val);
 
             var data = new List<SampleData>()
             {
-                new SampleData( 5, "Hello", true),
-                new SampleData(20,"A,B;C", false),
-                new SampleData(10, "A\"B,C", true),
+                new SampleData(5, "AA", true),
+                new SampleData(20,"BB", false),
+                new SampleData(10,"CC", true),
             };
 
             var exportResult = exporter.Export(data);
 
             var reader = new StreamReader(exportResult);
             Assert.Equal(@"Number;Text;Bool", reader.ReadLine());
-            Assert.Equal(@"5;Hello;👍", reader.ReadLine());
-            Assert.Equal(@"20;""A,B;C"";❌", reader.ReadLine());
-            Assert.Equal(@"10;""A""""B,C"";👍", reader.ReadLine());
+            Assert.Equal(@"_5_;TextData=AA;👍", reader.ReadLine());
+            Assert.Equal(@"_20_;TextData=BB;❌", reader.ReadLine());
+            Assert.Equal(@"_10_;TextData=CC;👍", reader.ReadLine());
         }
     }
 
