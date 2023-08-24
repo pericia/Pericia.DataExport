@@ -26,7 +26,57 @@ namespace Pericia.DataExport
             Assert.Equal(@"5;Hello;True", reader.ReadLine());
             Assert.Equal(@"20;""A,B;C"";False", reader.ReadLine());
             Assert.Equal(@"10;""A""""B,C"";True", reader.ReadLine());
+        }
 
+        [Fact]
+        public void AnonymousExport()
+        {
+            var exporter = new CsvDataExporter();
+
+            var data = new object[] {
+                new { IntData = 5, TextData = "Hello" },
+                new { IntData = 10, TextData = "AA" },
+            };
+
+            var columns = new ExportColumn[]
+            {
+                new ExportColumn { Property = "IntData", Title = "Number" },
+                new ExportColumn { Property = "TextData", Title = "Text" },
+            };
+
+            exporter.AddSheet(data, columns);
+            var exportResult = exporter.GetFile();
+
+            var reader = new StreamReader(exportResult);
+            Assert.Equal(@"Number;Text", reader.ReadLine());
+            Assert.Equal(@"5;Hello", reader.ReadLine());
+            Assert.Equal(@"10;AA", reader.ReadLine());
+        }
+
+        [Fact]
+        public void DictionaryExport()
+        {
+            var exporter = new CsvDataExporter();
+
+            var data = new List<Dictionary<string, object>>()
+            {
+                new Dictionary<string, object> { { "IntData", 5 }, { "TextData", "Hello" } },
+                new Dictionary<string, object> { { "IntData", 10 }, { "TextData", "AA" } },
+            };  
+
+            var columns = new ExportColumn[]
+            {
+                new ExportColumn { Property = "IntData", Title = "Number" },
+                new ExportColumn { Property = "TextData", Title = "Text" },
+            };
+
+            exporter.AddSheet(data, columns);
+            var exportResult = exporter.GetFile();
+
+            var reader = new StreamReader(exportResult);
+            Assert.Equal(@"Number;Text", reader.ReadLine());
+            Assert.Equal(@"5;Hello", reader.ReadLine());
+            Assert.Equal(@"10;AA", reader.ReadLine());
         }
 
         [Fact]

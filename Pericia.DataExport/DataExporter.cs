@@ -1,4 +1,5 @@
 ﻿using DocumentFormat.OpenXml.Math;
+using DocumentFormat.OpenXml.Vml.Office;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -24,6 +25,11 @@ namespace Pericia.DataExport
 
         public void AddSheet(IEnumerable<object> data, ExportColumn[] columns, string? name = null)
         {
+            if (data == null)
+            {
+                throw new ArgumentNullException(nameof(data));
+            }
+
             NewSheet(name);
 
             // Write headers
@@ -35,13 +41,24 @@ namespace Pericia.DataExport
 
             foreach (var line in data)
             {
-                var lineType = line.GetType();
-
-                foreach (var column in columns)
+                if (line is IDictionary<string, object> dict)
                 {
-                    var property = lineType.GetProperty(column.Property, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
-                    var value = property?.GetValue(line);
-                    WriteDataValue(column.Property, value ?? "");
+                    foreach (var column in columns)
+                    {
+                        var value = dict[column.Property];
+                        WriteDataValue(column.Property, value ?? "");
+                    }
+                }
+                else
+                {
+                    var lineType = line.GetType();
+
+                    foreach (var column in columns)
+                    {
+                        var property = lineType.GetProperty(column.Property, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+                        var value = property?.GetValue(line);
+                        WriteDataValue(column.Property, value ?? "");
+                    }
                 }
 
                 NewLine();
@@ -50,6 +67,11 @@ namespace Pericia.DataExport
 
         public void AddSheet<T>(IEnumerable<T> data, string? name = null)
         {
+            if (data == null)
+            {
+                throw new ArgumentNullException(nameof(data));
+            }
+
             NewSheet(name);
 
             var typeInfo = typeof(T).GetTypeInfo();
@@ -84,6 +106,11 @@ namespace Pericia.DataExport
 
         public void AddSheet(System.Data.Common.DbDataReader reader, string? name = null)
         {
+            if (reader == null)
+            {
+                throw new ArgumentNullException(nameof(reader));
+            }
+
             NewSheet(name);
 
             // Write headers
