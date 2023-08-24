@@ -12,9 +12,9 @@ namespace Pericia.DataExport
     {
         protected MemoryStream stream { get; } = new MemoryStream();
 
-        private Dictionary<string, Func<object, object>>? PropertyDataConverter { get; set; }
-        private Dictionary<Type, Func<object, object>>? TypeDataConverter { get; set; }
-        private Func<object, string, object>? GlobalDataConverter { get; set; }
+        private Dictionary<string, Func<object?, object?>>? PropertyDataConverter { get; set; }
+        private Dictionary<Type, Func<object?, object?>>? TypeDataConverter { get; set; }
+        private Func<object?, string, object?>? GlobalDataConverter { get; set; }
 
 
         public void AddSheet(IEnumerable<object> data, string[] columns, string? name = null)
@@ -28,6 +28,10 @@ namespace Pericia.DataExport
             if (data == null)
             {
                 throw new ArgumentNullException(nameof(data));
+            }
+            if (columns== null)
+            {
+                throw new ArgumentNullException(nameof(columns));
             }
 
             NewSheet(name);
@@ -46,7 +50,7 @@ namespace Pericia.DataExport
                     foreach (var column in columns)
                     {
                         var value = dict[column.Property];
-                        WriteDataValue(column.Property, value ?? "");
+                        WriteDataValue(column.Property, value);
                     }
                 }
                 else
@@ -57,7 +61,7 @@ namespace Pericia.DataExport
                     {
                         var property = lineType.GetProperty(column.Property, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
                         var value = property?.GetValue(line);
-                        WriteDataValue(column.Property, value ?? "");
+                        WriteDataValue(column.Property, value);
                     }
                 }
 
@@ -197,13 +201,13 @@ namespace Pericia.DataExport
         }
 
 
-        private void WriteDataValue(string property, object data)
+        private void WriteDataValue(string property, object? data)
         {
-            if (PropertyDataConverter != null && PropertyDataConverter.TryGetValue(property, out Func<object, object> propConverter))
+            if (PropertyDataConverter != null && PropertyDataConverter.TryGetValue(property, out Func<object?, object?> propConverter))
             {
                 data = propConverter(data);
             }
-            else if (TypeDataConverter != null && TypeDataConverter.TryGetValue(data.GetType(), out Func<object, object> typeConverter))
+            else if (TypeDataConverter != null && TypeDataConverter.TryGetValue(data!.GetType(), out Func<object?, object?> typeConverter))
             {
                 data = typeConverter(data);
             }
@@ -215,7 +219,7 @@ namespace Pericia.DataExport
             WriteDataRaw(data);
         }
 
-        protected abstract void WriteDataRaw(object data);
+        protected abstract void WriteDataRaw(object? data);
 
         private class ColumnInfo
         {

@@ -144,7 +144,7 @@ namespace Pericia.DataExport
             sheetData.Append(row);
         }
 
-        protected override void WriteDataRaw(object data)
+        protected override void WriteDataRaw(object? data)
         {
             if (row == null)
             {
@@ -157,6 +157,8 @@ namespace Pericia.DataExport
             {
                 CellReference = ExcelColumnFromNumber(currentCol++) + currentRow.ToString(CultureInfo.InvariantCulture),
             };
+
+            if (data == null) return;
 
             if (data is sbyte || data is byte || data is short || data is ushort || data is int || data is uint
                 || data is long || data is ulong || data is float || data is double || data is decimal)
@@ -179,7 +181,8 @@ namespace Pericia.DataExport
             }
             else
             {
-                if (data == null) return;
+                var dataString = data.ToString();
+                if (dataString.Length == 0) return; // we don't write empty strings to avoir Excel to consider them as non empty
 
                 cell.DataType = CellValues.String;
                 cell.CellValue = new CellValue(data.ToString());

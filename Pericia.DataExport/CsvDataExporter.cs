@@ -31,13 +31,13 @@ namespace Pericia.DataExport
             currentLine = new List<string>();
         }
 
-        protected override void WriteDataRaw(object data)
+        protected override void WriteDataRaw(object? data)
         {
             currentLine.Add(Escape(data));
         }
         
 
-        private static string Escape(object o)
+        private static string Escape(object? o)
         {
             if (o == null)
             {
