@@ -29,7 +29,7 @@ namespace Pericia.DataExport
             {
                 throw new ArgumentNullException(nameof(data));
             }
-            if (columns== null)
+            if (columns == null)
             {
                 throw new ArgumentNullException(nameof(columns));
             }
@@ -49,7 +49,7 @@ namespace Pericia.DataExport
                 {
                     foreach (var column in columns)
                     {
-                        var value = dict[column.Property];
+                        var value = dict.ContainsKey(column.Property) ? dict[column.Property] : null;
                         WriteDataValue(column.Property, value);
                     }
                 }
