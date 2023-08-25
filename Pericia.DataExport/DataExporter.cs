@@ -207,7 +207,7 @@ namespace Pericia.DataExport
             {
                 data = propConverter(data);
             }
-            else if (TypeDataConverter != null && TypeDataConverter.TryGetValue(data!.GetType(), out Func<object?, object?> typeConverter))
+            else if (TypeDataConverter != null && data != null && TypeDataConverter.TryGetValue(data.GetType(), out Func<object?, object?> typeConverter))
             {
                 data = typeConverter(data);
             }
