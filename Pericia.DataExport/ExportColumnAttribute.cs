@@ -10,5 +10,7 @@ namespace Pericia.DataExport
         public string Title { get; set; } = string.Empty;
 
         public int Order { get; set; }
+
+        public bool IsFormula { get; set; }
     }
 }

@@ -16,6 +16,18 @@ namespace Pericia.DataExport
         private Dictionary<Type, Func<object?, object?>>? TypeDataConverter { get; set; }
         private Func<object?, string, object?>? GlobalDataConverter { get; set; }
 
+        protected virtual bool SupportsFormulas => false;
+
+        protected sealed class FormulaValue
+        {
+            public FormulaValue(string formula)
+            {
+                Formula = formula;
+            }
+
+            public string Formula { get; }
+        }
+
 
         public void AddSheet(IEnumerable<object> data, string[] columns, string? name = null)
         {
@@ -34,10 +46,12 @@ namespace Pericia.DataExport
                 throw new ArgumentNullException(nameof(columns));
             }
 
+            var effectiveColumns = columns.Where(c => !c.IsFormula || SupportsFormulas).ToArray();
+
             NewSheet(name);
 
             // Write headers
-            foreach (var column in columns)
+            foreach (var column in effectiveColumns)
             {
                 WriteDataRaw(column.Title);
             }
@@ -47,21 +61,21 @@ namespace Pericia.DataExport
             {
                 if (line is IDictionary<string, object> dict)
                 {
-                    foreach (var column in columns)
+                    foreach (var column in effectiveColumns)
                     {
                         var value = dict.ContainsKey(column.Property) ? dict[column.Property] : null;
-                        WriteDataValue(column.Property, value);
+                        WriteDataValue(column.Property, value, column.IsFormula);
                     }
                 }
                 else
                 {
                     var lineType = line.GetType();
 
-                    foreach (var column in columns)
+                    foreach (var column in effectiveColumns)
                     {
                         var property = lineType.GetProperty(column.Property, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
                         var value = property?.GetValue(line);
-                        WriteDataValue(column.Property, value);
+                        WriteDataValue(column.Property, value, column.IsFormula);
                     }
                 }
 
@@ -90,7 +104,8 @@ namespace Pericia.DataExport
                 }
             }
 
-            properties = properties.OrderBy(a => a.Attr.Order).ToList();
+            properties = properties.Where(p => !p.Attr.IsFormula || SupportsFormulas)
+                .OrderBy(a => a.Attr.Order).ToList();
             // Write headers
             foreach (var prop in properties)
             {
@@ -102,7 +117,7 @@ namespace Pericia.DataExport
             {
                 foreach (var prop in properties)
                 {
-                    WriteDataValue(prop.Prop.Name, prop.Prop.GetValue(line));
+                    WriteDataValue(prop.Prop.Name, prop.Prop.GetValue(line), prop.Attr.IsFormula);
                 }
                 NewLine();
             }
@@ -134,7 +149,7 @@ namespace Pericia.DataExport
                     {
                         value = "";
                     }
-                    WriteDataValue(prop, value);
+                    WriteDataValue(prop, value, false);
                 }
                 NewLine();
             }
@@ -201,7 +216,7 @@ namespace Pericia.DataExport
         }
 
 
-        private void WriteDataValue(string property, object? data)
+        private void WriteDataValue(string property, object? data, bool isFormula)
         {
             if (PropertyDataConverter != null && PropertyDataConverter.TryGetValue(property, out Func<object?, object?> propConverter))
             {
@@ -214,6 +229,11 @@ namespace Pericia.DataExport
             else if (GlobalDataConverter != null)
             {
                 data = GlobalDataConverter(data, property);
+            }
+
+            if (isFormula && data != null)
+            {
+                data = new FormulaValue(data.ToString());
             }
 
             WriteDataRaw(data);

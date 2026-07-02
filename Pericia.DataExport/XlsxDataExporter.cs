@@ -26,6 +26,8 @@ namespace Pericia.DataExport
 
         private Lazy<uint> dateStyleIndex;
 
+        protected override bool SupportsFormulas => true;
+
         public XlsxDataExporter()
         {
             package = SpreadsheetDocument.Create(stream, SpreadsheetDocumentType.Workbook);
@@ -159,6 +161,18 @@ namespace Pericia.DataExport
             };
 
             if (data == null) return;
+
+            if (data is FormulaValue formulaValue)
+            {
+                var formulaText = formulaValue.Formula;
+                if (formulaText.StartsWith("=", StringComparison.Ordinal))
+                {
+                    formulaText = formulaText.Substring(1);
+                }
+                cell.CellFormula = new CellFormula(formulaText);
+                row.Append(cell);
+                return;
+            }
 
             if (data is sbyte || data is byte || data is short || data is ushort || data is int || data is uint
                 || data is long || data is ulong || data is float || data is double || data is decimal)

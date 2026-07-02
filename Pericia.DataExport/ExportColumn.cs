@@ -9,5 +9,7 @@ namespace Pericia.DataExport
         public string Title { get; set; } = string.Empty;
 
         public string Property { get; set; } = string.Empty;
+
+        public bool IsFormula { get; set; }
     }
 }

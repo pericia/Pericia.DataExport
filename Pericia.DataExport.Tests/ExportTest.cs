@@ -66,6 +66,65 @@ namespace Pericia.DataExport
             }
         }
 
+        [Fact]
+        public void XlsxFormulaExportTest()
+        {
+            var exporter = new XlsxDataExporter();
+
+            var data = new List<SampleDataWithFormula>()
+            {
+                new SampleDataWithFormula(5, "=A1+A2"),
+                new SampleDataWithFormula(10, "SUM(A1:A2)"),
+                new SampleDataWithFormula(20, null),
+            };
+
+            var exportResult = exporter.Export(data);
+
+            using (var spreadsheet = SpreadsheetDocument.Open(exportResult, false))
+            {
+                AssertCellValue("Number", spreadsheet, "A1");
+                AssertCellValue("Formula", spreadsheet, "B1");
+
+                AssertCellValue("5", spreadsheet, "A2");
+                AssertCellValue("A1+A2", spreadsheet, "B2");
+
+                AssertCellValue("10", spreadsheet, "A3");
+                AssertCellValue("SUM(A1:A2)", spreadsheet, "B3");
+
+                AssertCellValue("20", spreadsheet, "A4");
+                AssertNoCell(spreadsheet, "B4");
+            }
+        }
+
+        [Fact]
+        public void CsvFormulaColumnIsOmittedTest()
+        {
+            var exporter = new CsvDataExporter();
+
+            var data = new List<SampleDataWithFormula>()
+            {
+                new SampleDataWithFormula(5, "=A1+A2"),
+                new SampleDataWithFormula(10, "SUM(A1:A2)"),
+            };
+
+            var exportResult = exporter.Export(data);
+
+            var reader = new StreamReader(exportResult);
+            Assert.Equal(@"Number", reader.ReadLine());
+            Assert.Equal(@"5", reader.ReadLine());
+            Assert.Equal(@"10", reader.ReadLine());
+        }
+
+        private void AssertNoCell(SpreadsheetDocument spreadsheet, string cellReference)
+        {
+            var wbPart = spreadsheet.WorkbookPart;
+            var sheet = wbPart.Workbook.Descendants<Sheet>().Single();
+            var wsPart = (WorksheetPart)wbPart.GetPartById(sheet.Id);
+
+            var cell = wsPart.Worksheet.Descendants<Cell>().Where(c => c.CellReference == cellReference).FirstOrDefault();
+            Assert.Null(cell);
+        }
+
         private void AssertCellValue(string expectedValue, SpreadsheetDocument spreadsheet, string cellReference)
         {
             var wbPart = spreadsheet.WorkbookPart;
@@ -172,5 +231,20 @@ namespace Pericia.DataExport
         [ExportColumn(Title = "Bool", Order = 3)]
         public bool BoolData { get; set; }
 
+    }
+
+    public class SampleDataWithFormula
+    {
+        public SampleDataWithFormula(int intData, string? formulaText)
+        {
+            IntData = intData;
+            FormulaText = formulaText;
+        }
+
+        [ExportColumn(Title = "Number", Order = 1)]
+        public int IntData { get; set; }
+
+        [ExportColumn(Title = "Formula", Order = 2, IsFormula = true)]
+        public string? FormulaText { get; set; }
     }
 }
