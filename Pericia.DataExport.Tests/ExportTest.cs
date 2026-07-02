@@ -1,5 +1,6 @@
 ﻿using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Validation;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -76,12 +77,18 @@ namespace Pericia.DataExport
                 new SampleDataWithFormula(5, "=A1+A2"),
                 new SampleDataWithFormula(10, "SUM(A1:A2)"),
                 new SampleDataWithFormula(20, null),
+                new SampleDataWithFormula(30, ""),
+                new SampleDataWithFormula(40, "="),
             };
 
             var exportResult = exporter.Export(data);
 
             using (var spreadsheet = SpreadsheetDocument.Open(exportResult, false))
             {
+                var validator = new OpenXmlValidator();
+                var errors = validator.Validate(spreadsheet).ToList();
+                Assert.True(errors.Count == 0, string.Join("\n", errors.Select(e => e.Description + " @ " + e.Path?.XPath)));
+
                 AssertCellValue("Number", spreadsheet, "A1");
                 AssertCellValue("Formula", spreadsheet, "B1");
 
@@ -93,6 +100,12 @@ namespace Pericia.DataExport
 
                 AssertCellValue("20", spreadsheet, "A4");
                 AssertNoCell(spreadsheet, "B4");
+
+                AssertCellValue("30", spreadsheet, "A5");
+                AssertNoCell(spreadsheet, "B5");
+
+                AssertCellValue("40", spreadsheet, "A6");
+                AssertNoCell(spreadsheet, "B6");
             }
         }
 

@@ -169,13 +169,12 @@ namespace Pericia.DataExport
                 {
                     formulaText = formulaText.Substring(1);
                 }
-                cell.CellFormula = new CellFormula(formulaText);
-                row.Append(cell);
-                return;
-            }
 
-            if (data is sbyte || data is byte || data is short || data is ushort || data is int || data is uint
-                || data is long || data is ulong || data is float || data is double || data is decimal)
+                if (formulaText.Length == 0) return; // Excel treats a cell with an empty <f/> as corrupt content
+                cell.CellFormula = new CellFormula(formulaText);
+            }
+            else if (data is sbyte || data is byte || data is short || data is ushort || data is int || data is uint
+                     || data is long || data is ulong || data is float || data is double || data is decimal)
             {
                 cell.DataType = CellValues.Number;
                 var toStringMethod = data.GetType().GetMethod("ToString", new Type[] { typeof(IFormatProvider) });
@@ -206,6 +205,7 @@ namespace Pericia.DataExport
         }
 
         private static Dictionary<int, string> excelColumnCache = new Dictionary<int, string>();
+
         private static string ExcelColumnFromNumber(int column)
         {
             if (excelColumnCache.ContainsKey(column))
@@ -236,8 +236,8 @@ namespace Pericia.DataExport
         }
 
 
-
         private List<string> sheetNames = new List<string>();
+
         protected string NewSheetName(string? suggestedName)
         {
             if (suggestedName == null)
@@ -263,6 +263,5 @@ namespace Pericia.DataExport
             sheetNames.Add(suggestedName);
             return suggestedName;
         }
-
     }
 }
